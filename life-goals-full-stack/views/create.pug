@@ -1,0 +1,16 @@
+extend layout 
+
+block content
+    h1= title
+    form(method="POST" action="/create")
+        label(for="goal") Goal 
+        input(type="text" name="goal" id="goal")
+        br
+        label(for="due_date") Due Date
+        input(type="date" name="due_date" id="due_date")
+        br
+        input(type="submit" value="Create Goal" class="btn btn-primary")
+    
+    br
+
+    a(href="/") &lt;-- Back to goals
