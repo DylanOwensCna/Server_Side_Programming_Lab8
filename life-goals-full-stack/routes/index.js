@@ -28,16 +28,16 @@ router.post("/goals/:id/delete", goal_controller.delete_goal);
 router.post("/goals/:id/update", goal_controller.update_goal);
 
 /* GET sign-up page. */
-router.get('/signup', user_controller.signup_get);
+router.get("/sign-up", user_controller.user_create_post);
 
 /* POST sign-up page. */
-router.post('/signup', user_controller.signup_post);
+router.post("/sign-up", user_controller.user_create_post);
 
-/* GET login page. */
-router.get('/login', user_controller.login_get);
+// /* GET login page. */
+// router.get('/log-in', user_controller.login_get);
 
-/* POST login page. */
-router.post('/login', user_controller.login_post);
+// /* POST login page. */
+// router.post('/log-in', user_controller.login_post);
 
 
 module.exports = router;

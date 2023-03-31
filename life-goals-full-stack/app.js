@@ -6,8 +6,10 @@ var logger = require('morgan');
 var mongoose = require('mongoose');
 var dotenv = require('dotenv');
 
+
 // use this file to define all the routes of the application
 var indexRouter = require('./routes/index');
+
 
 var app = express();
 
@@ -68,5 +70,15 @@ app.post("/sign-up", async (req, res, next) => {
     return next(err);
   };
 });
+
+// app.post(
+//   "/log-in",
+//   passport.authenticate("local", {
+//     successRedirect: "/",
+//     failureRedirect: "/"
+//   })
+// );
+
+
 
 module.exports = app;
