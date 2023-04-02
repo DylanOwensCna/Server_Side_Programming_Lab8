@@ -1,4 +1,3 @@
-// This file contains all of the routes for the application. It is required in app.js and used to define all the routes of the application.
 const isAuthenticated = require("./authMiddleware").isAuthenticated;
 var express = require('express');
 var router = express.Router();
@@ -7,17 +6,34 @@ const bcrypt = require("bcryptjs");
 
 // Require controller modules.
 var goal_controller = require('../controllers/goalsController');
-
-
+const User = require('../models/users');
+const Goal = require('../models/goals');
 
 /* GET home page. */
-// router.get('/', goal_controller.goal_list);
 router.get("/", (req, res) => {
-    res.render("index", { user: req.user })
+    res.render("index", { user: req.user });
 });
+
+router.get("/:id", async (req, res, next) => {
+    try {
+      const userId = req.params.id;
+      const user = await User.findById(userId);
+      if (!user) {
+        return next();
+      }
+      const goals = await Goal.find();
+      res.render("goals", {
+        title: `${user.username}'s Goals`,
+        user,
+        goals,
+      });
+    } catch (err) {
+      return next(err);
+    }
+  });
+  
 /* GET goal detail page. */
 router.get('/goals/:id', goal_controller.goal_detail);
-
 
 /* GET create goal page. */
 router.get("/create", goal_controller.goal_create_get);
@@ -30,6 +46,37 @@ router.post("/goals/:id/delete", goal_controller.delete_goal);
 
 // POST request to update Post.
 router.post("/goals/:id/update", goal_controller.update_goal);
+
+
+
+// user goals page
+router.get('/user-goals', isAuthenticated, async (req, res, next) => {
+    try {
+      const userId = req.user.id;
+      const goals = await Goal.find({ userId });
+      res.render('goals', { 
+        title: 'My Goals',
+        goals
+      });
+    } catch (err) {
+      next(err);
+    }
+  });
+  
+
+// Logout route
+// Add new route for logout
+router.get('/logout', function(req, res){
+    req.logout();
+    res.redirect('/');
+});
+  
+// log in page
+router.post("/log-in", passport.authenticate("local", {
+    successRedirect: "/",
+    failureRedirect: "/"
+  })
+);
 
 // sign up page
 router.get("/sign-up", (req, res) => res.render("sign-up-form"));
@@ -54,24 +101,5 @@ router.post("/sign-up", async (req, res, next) => {
         return next(err);
     };
 });
-
-// // /* GET login page. */
-// router.get("/secret", isAuthenticated, (req, res, next) => res.render("secret"));
-
-router.get("/log-out", (req, res, next) => {
-    req.logout(function (err) {
-        if (err) {
-            return next(err);
-        }
-        res.redirect("/");
-    });
-});
-
-// log in page
-router.post("/log-in", passport.authenticate("local", {
-    successRedirect: "/",
-    failureRedirect: "/"
-  })
-);
 
 module.exports = router;

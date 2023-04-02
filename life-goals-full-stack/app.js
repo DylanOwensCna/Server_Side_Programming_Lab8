@@ -92,39 +92,8 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-//// app.js
-app.get("/sign-up", (req, res) => res.render("sign-up-form"));
 
 
-app.post("/sign-up", async (req, res, next) => {
-  try {
-    const user = new User({
-      username: req.body.username,
-      password: req.body.password
-    });
-    const result = await user.save();
-    res.redirect("/");
-  } catch(err) {
-    return next(err);
-  };
-});
-
-app.post(
-  "/log-in",
-  passport.authenticate("local", {
-    successRedirect: "/",
-    failureRedirect: "/log-in"
-  })
-);
-
-app.get("/log-out", (req, res, next) => {
-  req.logout(function (err) {
-    if (err) {
-      return next(err);
-    }
-    res.redirect("/log-in");
-  });
-});
 
 
 module.exports = app;

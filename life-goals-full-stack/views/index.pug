@@ -5,11 +5,12 @@ block content
 
   if user
     h2 Welcome #{user.username}!
-    a(href=`/${user._id}`) Your Goals 
-    br
-    br
-    a(href="/log-out") Log Out 
-    br
+    if user 
+      a(href=`/${user._id}`) Your Goals 
+      br
+      br
+      a(href="/logout") Log out
+      br
 
   else 
     h2 Please log in 
