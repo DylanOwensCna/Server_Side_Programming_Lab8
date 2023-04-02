@@ -1,0 +1,11 @@
+extends layout
+
+block content
+    h1= title    
+    div(class="goals")
+        each goal in goals
+            div(class=`${goal.is_completed ? "completed-goal" : "goal"}`)
+                a(href=goal.url) #{goal.goal}
+                |  (End date: #{goal.due_date.toDateString()})
+    
+    a(href="/create") Create Goal

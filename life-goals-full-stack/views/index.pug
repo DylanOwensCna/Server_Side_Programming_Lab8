@@ -1,22 +1,30 @@
 extends layout
 
 block content
-    h1= title
+  h1= title
 
-    div(class="goals")
-        each goal in goals
-            div(class=`${goal.is_completed ? "completed-goal" : "goal"}`)
-                a(href=goal.url) #{goal.goal}
-                |  (End date: #{goal.due_date.toDateString()})
-    
-    a(href="/create") Create Goal
+  if user
+    h2 Welcome #{user.username}!
+    a(href=`/${user._id}`) Your Goals 
+    br
+    br
+    a(href="/log-out") Log Out 
+    br
 
-    <h1>please log in</h1>
-    <form action="/log-in" method="POST">
-    <label for="username">Username</label>
-    <input name="username" placeholder="username" type="text" />
-    <label for="password">Password</label>
-    <input name="password" type="password" />
-    <button>Log In</button>
-    </form>
+  else 
+    h2 Please log in 
+    form(action="/log-in" method="POST")
+      label(for="username") Username
+      input(type="text", name="username", id="username")
+      br
+      label(for="password") Password
+      input(type="password", name="password", id="password")
+      br
+      button(type="submit" class="btn btn-primary") Login
+      br
+      br
+
+  p Sign-up? #[a(href="/sign-up") Sign up ]
+
+  if !user
     form(method="POST" action="/")
