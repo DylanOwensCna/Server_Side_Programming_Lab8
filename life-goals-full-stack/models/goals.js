@@ -9,11 +9,9 @@ const GoalSchema = new mongoose.Schema({
     user_id: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
 });
 
-
 GoalSchema.virtual("url").get(function () {
     // We don't use an arrow function as we'll need the this object
     return `/goals/${this._id}`;
   });
-
 
 module.exports = mongoose.model("Goal", GoalSchema);

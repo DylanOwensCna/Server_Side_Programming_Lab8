@@ -29,7 +29,6 @@ exports.goal_detail = function (req, res, next) {
     });
 }
 
-
 // Display the create goal form
 exports.goal_create_get = function (req, res, next) {
     res.render("create", { title: "New Goal" });
@@ -80,15 +79,12 @@ exports.user_goals = async function(req, res, next) {
         if (userGoals.length === 0) {
             res.redirect('/create');
         } else {
-            res.render("user-goals", { goals: userGoals });
+            res.render("goals", { goals: userGoals });
         }
     } catch (err) {
         return next(err);
     }
 };
-
-
-
 
 // Count number of goals in DB
 
