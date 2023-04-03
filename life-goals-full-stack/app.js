@@ -13,7 +13,6 @@ const User = require('./models/users');
 // use this file to define all the routes of the application
 var indexRouter = require('./routes/index');
 
-
 var app = express();
 app.set("views", __dirname);
 app.set("view engine", "pug");
