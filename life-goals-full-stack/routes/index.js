@@ -36,17 +36,18 @@ router.post("/goals/:id/update", goal_controller.update_goal);
 
 // user goals page
 router.get('/user-goals', isAuthenticated, async (req, res, next) => {
-    try {
-      const userId = req.user._id; // change the userId to use the ObjectId format
-      const goals = await Goal.find({ userId });
-      res.render('goals', { 
-        title: 'My Goals',
-        goals
-      });
-    } catch (err) {
-      next(err);
-    }
-  });
+  try {
+    const userId = req.user._id; // Get the ID of the logged-in user
+    const goals = await Goal.find({ user_id: userId }); // Find all goals that belong to the logged-in user
+    res.render('goals', {
+      title: 'My Goals',
+      goals
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
   
 
 // Logout route

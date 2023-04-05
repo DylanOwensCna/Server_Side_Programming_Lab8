@@ -85,12 +85,3 @@ exports.user_goals = async function(req, res, next) {
         return next(err);
     }
 };
-
-// Count number of goals in DB
-
-// exports.goals_count = function (req, res, next) {
-//     goals.countDocuments({}, function (err, count) {
-//         if (err) {
-//             return next(err);
-//         }
-//         res.send(`There are ${count} goals in
