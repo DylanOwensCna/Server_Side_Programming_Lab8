@@ -6,9 +6,10 @@
 
 const goals = require("../models/goals");
 
-// Search DB for all goals
+
+// Search DB for all goals belonging to the currently logged in user
 exports.goal_list = function (req, res, next) {
-    goals.find({}, "goal due_date date_created is_completed")
+    goals.find({ userID: req.user._id }, "goal due_date date_created is_completed")
     .sort([["due_date", "ascending"]])
     .exec(function (err, result) {
             if (err) {
@@ -17,6 +18,7 @@ exports.goal_list = function (req, res, next) {
             res.render("index", { title: "Life Goals", goals: result });
         });
 }
+
 
 // Search DB for details of a specific goal
 exports.goal_detail = function (req, res, next) {

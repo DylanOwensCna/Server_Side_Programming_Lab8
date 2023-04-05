@@ -11,6 +11,7 @@ var logger = require('morgan');
 var mongoose = require('mongoose');
 var dotenv = require('dotenv');
 const User = require('./models/users');
+const Goal = require('./models/goals');
 
 // use this file to define all the routes of the application
 var indexRouter = require('./routes/index');
@@ -24,6 +25,9 @@ passport.use(
   new LocalStrategy(async(username, password, done) => {
     try {
       const user = await User.findOne({ username: username });
+      if (!user) {
+        return done(null, false, { message: "Incorrect username" });
+      }
       bcrypt.compare(password, user.password, (err, res) => {
         if (res) {
           // passwords match! log user in
@@ -32,12 +36,43 @@ passport.use(
           // passwords do not match!
           return done(null, false, { message: "Incorrect password" })
         }
-      })
+      });
+
+
     } catch(err) {
       return done(err);
     };
   })
 );
+// Define a middleware function to check if the user is authenticated
+function isAuthenticated(req, res, next) {
+  console.log('isAuthenticated middleware called');
+  console.log('req.isAuthenticated():', req.isAuthenticated());
+  console.log('req.user:', req.user);
+  if (req.isAuthenticated()) {
+    // Store the authenticated user in the session
+    req.session.user = req.user;
+    return next();
+  } else {
+    // User is not authenticated, redirect to login page
+    return res.redirect('/login');
+  }
+}
+
+// Define a new route handler for the user's goals
+app.get('/goals', isAuthenticated, async (req, res) => {
+  try {
+    // Find all the goals with the same userID as the user's id
+    const goals = await Goal.find({ userID: req.session.user._id });
+
+
+
+    // Pass the goals to the view
+    return res.render('goals', { goals: goals });
+  } catch(err) {
+    return res.render('error', { message: err.message });
+  }
+});
 passport.serializeUser(function(user, done) {
   done(null, user.id);
 });
@@ -94,9 +129,5 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
-
-
-
-
 
 module.exports = app;
