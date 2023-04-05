@@ -44,6 +44,39 @@ passport.use(
     };
   })
 );
+
+
+// Define a new route handler for the user's goals
+app.get('/goals', isAuthenticated, async (req, res) => {
+  try {
+    // Find all the goals with the same userID as the user's id
+    const goals = await Goal.find({ user_id: req.session.user.id });
+
+
+    // Pass the goals to the view
+    return res.render('goals', { goals: goals });
+  } catch(err) {
+    return res.render('error', { message: err.message });
+  }
+});
+app.get("/:id", async (req, res, next) => {
+  try {
+    const userId = req.params.id;
+    const user = await User.findById(userId);
+    if (!user) {
+      return next();
+    }
+    const goals = await Goal.find();
+    res.render("goals", {
+      title: `${user.username}'s Goals`,
+      user,
+      goals,
+    });
+  } catch (err) {
+    return next(err);
+  }
+});
+
 // Define a middleware function to check if the user is authenticated
 function isAuthenticated(req, res, next) {
   console.log('isAuthenticated middleware called');
@@ -58,21 +91,6 @@ function isAuthenticated(req, res, next) {
     return res.redirect('/login');
   }
 }
-
-// Define a new route handler for the user's goals
-app.get('/goals', isAuthenticated, async (req, res) => {
-  try {
-    // Find all the goals with the same userID as the user's id
-    const goals = await Goal.find({ userID: req.session.user._id });
-
-
-
-    // Pass the goals to the view
-    return res.render('goals', { goals: goals });
-  } catch(err) {
-    return res.render('error', { message: err.message });
-  }
-});
 passport.serializeUser(function(user, done) {
   done(null, user.id);
 });
