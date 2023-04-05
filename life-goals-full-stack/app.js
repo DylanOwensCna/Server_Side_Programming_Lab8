@@ -5,6 +5,8 @@ var cookieParser = require('cookie-parser');
 const session = require("express-session");
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
+const bcrypt = require("bcryptjs");
+
 var logger = require('morgan');
 var mongoose = require('mongoose');
 var dotenv = require('dotenv');
@@ -22,13 +24,15 @@ passport.use(
   new LocalStrategy(async(username, password, done) => {
     try {
       const user = await User.findOne({ username: username });
-      if (!user) {
-        return done(null, false, { message: "Incorrect username" });
-      };
-      if (user.password !== password) {
-        return done(null, false, { message: "Incorrect password" });
-      };
-      return done(null, user);
+      bcrypt.compare(password, user.password, (err, res) => {
+        if (res) {
+          // passwords match! log user in
+          return done(null, user)
+        } else {
+          // passwords do not match!
+          return done(null, false, { message: "Incorrect password" })
+        }
+      })
     } catch(err) {
       return done(err);
     };
